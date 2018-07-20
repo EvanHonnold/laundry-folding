@@ -1,0 +1,13 @@
+# ignore compiled files
+*.pyc
+
+# ignore VS Code settings:
+**/.vscode
+
+# ignore TeX side-effect files:
+*.aux
+*.log
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.out
