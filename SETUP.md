@@ -13,8 +13,8 @@
                 "--disable=C0103",
                 "--disable=C0111"]}
         ```
-* Create a Python virtual environment for this project. 
-    * Note: ensure `python` refers to the Python 2.x executable. 
+* Create a Python virtual environment for this project. (Python Version 3.)
+    * Note: ensure `python` refers to the executable of the Python version you'd like to use. 
     * Follow [these instructions](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/). 
     * Recommended: create it *outside* the repository folders, to prevent its files from appearing in search. Otherwise, at least exclude it from source control. 
 * Load the required packages into the virtual environment: `python -m pip install -r requirements.txt`, where `python` is the executable under `<environment>\Scripts'.
