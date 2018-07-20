@@ -14,12 +14,15 @@
                 "--disable=C0111"]}
         ```
 * Create a Python virtual environment for this project. 
-    * Recommended: create it *outside* the repository folders, to prevent its files from appearing in search. 
-* Ensure that the code will be executed using the version of the Python interpreter inside the virtual environment. If using VS Code:
+    * Note: ensure `python` refers to the Python 2.x executable. 
+    * Follow [these instructions](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/). 
+    * Recommended: create it *outside* the repository folders, to prevent its files from appearing in search. Otherwise, at least exclude it from source control. 
+* Load the required packages into the virtual environment: `python -m pip install -r requirements.txt`, where `python` is the executable under `<environment>\Scripts'.
+* Ensure that the code will be executed using the Python interpreter inside the virtual environment. If using VS Code:
     * In workspace settings, set `pythonPath`, e.g.:
         ```json
         {
-            "python.pythonPath": "{workspaceFolder\\..\\my-environment\\Scripts\\python.exe"
+            "python.pythonPath": "${workspaceFolder}\\..\\my-environment\\Scripts\\python.exe"
         }
         ```
     * Configure a build task that activates the virtual environment *before* running the script, e.g.:
@@ -40,3 +43,4 @@
         }
 
         ```
+        * Note: if the `activate` script will not run, try using Command Prompt instead of PowerShell as VS Code's integrated terminal. 
