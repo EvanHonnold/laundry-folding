@@ -33,7 +33,7 @@
                 {
                     "label": "Run Current Script",
                     "type": "shell",
-                    "command": "..\\my-environment\\Scripts\\activate & python \"${file}\"",
+                     "command": "call ..\\my-environment\\Scripts\\activate.bat & python \"${file}\"",
                     "group": {
                         "kind": "build",
                         "isDefault": true
