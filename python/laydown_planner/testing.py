@@ -1,12 +1,7 @@
-import sys
-for item in sys.path:
-    print str(item)
-
-from laydown_planner import plan, choose_best
+from laydown_planner.laydown_planner import plan, choose_best
 from numpy import array
 from helpers import within_range, direction, fix_angle, rotate
 from laydown_path import LaydownPath
-from fold_instructions import FoldInstructions
 from constants import LEFT
 
 # TODO: continue testing here
@@ -41,7 +36,7 @@ from constants import LEFT
 def example_inputdisplay():
     """ """
     import Tkinter as tk
-    from gui.input_display import InputDisplay
+    from laydown_planner.gui.input_display import InputDisplay
     from fold_instructions import FoldInstructions
     from math import pi
 
@@ -57,7 +52,7 @@ def example_inputdisplay():
 
 def example_laydown_config_display():
     import Tkinter as tk
-    from gui.laydown_config_display import LaydownConfigDisplay
+    from laydown_planner.gui.laydown_config_display import LaydownConfigDisplay
     from laydown_config import LaydownConfiguration
 
     #    config = LaydownConfiguration()
