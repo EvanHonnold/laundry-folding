@@ -2,7 +2,7 @@ from constants import RULER_LENGTH
 from numpy import array, array_equal, append
 from math import sin, cos, pi
 from helpers import within_range, direction
-from laydown_config import LaydownConfiguration
+from laydown_planner.laydown_config import LaydownConfiguration
 
 
 def plan(fold_instructions):
