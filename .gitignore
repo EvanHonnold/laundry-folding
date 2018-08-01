@@ -11,3 +11,6 @@
 *.fdb_latexmk
 *.fls
 *.out
+
+# ignore linting files
+**/.mypy_cache

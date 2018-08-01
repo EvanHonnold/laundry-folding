@@ -1,3 +1,4 @@
+from numpy import ndarray
 from helpers import fix_angle
 
 

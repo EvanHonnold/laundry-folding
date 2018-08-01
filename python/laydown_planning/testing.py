@@ -1,7 +1,7 @@
-from laydown_planner.laydown_planner import plan, choose_best
+from laydown_planning.laydown_planner import plan, choose_best
 from numpy import array
 from helpers import within_range, direction, fix_angle, rotate
-from laydown_planner.laydown_path import LaydownPath
+from laydown_planning.laydown_path import LaydownPath
 from constants import LEFT
 
 # TODO: continue testing here
@@ -36,7 +36,7 @@ from constants import LEFT
 def example_inputdisplay():
     """ """
     import tkinter as tk
-    from laydown_planner.gui.input_display import InputDisplay
+    from laydown_planning.gui.input_display import InputDisplay
     from fold_instructions import FoldInstructions
     from math import pi
 
@@ -52,11 +52,11 @@ def example_inputdisplay():
 
 def example_laydown_config_display():
     import tkinter as tk
-    from laydown_planner.gui.laydown_config_display import LaydownConfigDisplay
-    from laydown_planner.laydown_config import LaydownConfiguration
+    from laydown_planning.gui.laydown_config_display import LaydownConfigDisplay
+    from laydown_planning.laydown_config import LaydownConfiguration
     from math import pi
 
-    config = LaydownConfiguration(0, pi / 2, pi)
+    config = LaydownConfiguration(100, 1.3 * pi, 1.8 * pi)
 
     parent = tk.Frame(None)
     parent.pack()
@@ -64,4 +64,17 @@ def example_laydown_config_display():
     display.show(config)
     display.pack()
     parent.mainloop()
-    # TODO: continue working here
+
+
+def example_laydown_path_display():
+    import tkinter as tk
+    from laydown_planning.gui.laydown_path_display import LaydownPathDisplay
+    from laydown_planning.laydown_path import LaydownPath
+    from math import pi
+
+    parent = tk.Frame(None)
+    parent.pack()
+    display = LaydownPathDisplay(parent)
+    display.show(None)
+    display.pack()
+    parent.mainloop()

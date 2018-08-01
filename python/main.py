@@ -5,8 +5,8 @@ import numpy as np
 
 print("Beginning run")
 
-from laydown_planner.testing import example_laydown_config_display
-example_laydown_config_display()
+from laydown_planning.testing import example_laydown_path_display
+example_laydown_path_display()
 
 
 # NOTE: this is a script to demonstrate folds at various
@@ -16,7 +16,7 @@ example_laydown_config_display()
 # c.perform_pickup(item_min_x=215, slide_dist=420)
 # c.perform_setdown([400, -40], math.pi)
 # c.perform_pickup(item_min_x=165, slide_dist=250, lift_height=150)
-# # c.perform_setdown([200, -440], math.pi * 1.625, lift_height=175,
+# c.perform_setdown([200, -440], math.pi * 1.625, lift_height=175,
 #                   right_side_down=True, pull_distance=250)
 # c.perform_pickup(item_min_x=375, slide_dist=240, lift_height=125)
 

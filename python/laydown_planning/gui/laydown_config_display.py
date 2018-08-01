@@ -1,14 +1,15 @@
 from tkinter import Frame, Canvas
-from constants import RULER_LENGTH
-from helpers import direction, rotate, translate
 from numpy import array
-from math import pi
-import cmath
-from laydown_planner.laydown_config import LaydownConfiguration
+
+from constants import RULER_LENGTH
+from helpers import direction
+from laydown_planning.laydown_config import LaydownConfiguration
 
 SCALE = 0.4
-size = 300  # of the window
+size = 500  # of the window
 center = array([size/2, size/2])
+
+# Class for visualizing LaydownConfig objects.
 
 
 class LaydownConfigDisplay(Frame):
@@ -24,26 +25,29 @@ class LaydownConfigDisplay(Frame):
     def show(self, config: LaydownConfiguration):
         assert config.__class__.__name__ == "LaydownConfiguration"
 
+        def line(start, end, width=1):
+            self.canvas.create_line(
+                start[0], start[1], end[0], end[1], width=width)
+
+        # draw the table gap
+        line([0, size/2 - 1], [size, size/2 - 1])
+        line([0, size/2 + 1], [size, size/2 + 1])
+
         # vector represents the coordinate change from
         # the effector to the ruler's tip:
         v = direction(config.ruler_direction) * RULER_LENGTH * SCALE
+        effector = center + [0, config.y]
 
-        # walk backwards half of v's distance from the center
-        # to get to the point where we draw the effector:
-        e = center - v / 2
-        line_end = e + v
-        print(line_end)
+        ruler_end = effector + v
 
-        # draw the effector + ruler:
-        line_end[1] = size - line_end[1]
-        self.circle([e[0], size-e[1]], 10 * SCALE, "black")
-        self.canvas.create_line(
-            e[0], size-e[1], line_end[0], line_end[1], width=3)
+        garment_vec = direction(config.garment_direction) * 200 * SCALE
+        corner1 = ruler_end + garment_vec
+        corner2 = effector + garment_vec
+        self.canvas.create_polygon(
+            *effector, *ruler_end, *corner1, *corner2, fill='gray')
 
-        # draw the foldline:
-        y = size - (e[1] - config.y * SCALE)
-        self.canvas.create_line(0, y, size, y)
-        print(y)
+        self.circle(effector, 10 * SCALE, "black")
+        line(effector, ruler_end, width=3)
 
     def circle(self, center_coords, radius, fill=''):
         x0 = center_coords[0] - radius
