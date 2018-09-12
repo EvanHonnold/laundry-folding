@@ -14,7 +14,7 @@ Q_NEUTRAL = Quaternion(axis=[1, 0, 0], angle=pi) * \
     Quaternion(axis=[0, 0, 1], angle=pi / 4)
 
 ROBOT_BASE_CENTER = [0, 0]
-ROBOT_BASE_RADIUS = 120
+ROBOT_BASE_RADIUS = 100
 
 # how far away the robot can reach from (0, 0, 200)
 ROBOT_REACH = 550

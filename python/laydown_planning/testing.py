@@ -69,12 +69,16 @@ def example_laydown_config_display():
 def example_laydown_path_display():
     import tkinter as tk
     from laydown_planning.gui.laydown_path_display import LaydownPathDisplay
+    from laydown_planning.laydown_config import LaydownConfiguration
     from laydown_planning.laydown_path import LaydownPath
     from math import pi
+
+    config = LaydownConfiguration(100, 1.3 * pi, 1.8 * pi)
+    path = LaydownPath(config, 100, 200, destination_x=237)
 
     parent = tk.Frame(None)
     parent.pack()
     display = LaydownPathDisplay(parent)
-    display.show(None)
+    display.show(path)
     display.pack()
     parent.mainloop()

@@ -25,13 +25,9 @@ class LaydownConfigDisplay(Frame):
     def show(self, config: LaydownConfiguration):
         assert config.__class__.__name__ == "LaydownConfiguration"
 
-        def line(start, end, width=1):
-            self.canvas.create_line(
-                start[0], start[1], end[0], end[1], width=width)
-
         # draw the table gap
-        line([0, size/2 - 1], [size, size/2 - 1])
-        line([0, size/2 + 1], [size, size/2 + 1])
+        self.line([0, size/2 - 1], [size, size/2 - 1])
+        self.line([0, size/2 + 1], [size, size/2 + 1])
 
         # vector represents the coordinate change from
         # the effector to the ruler's tip:
@@ -46,8 +42,8 @@ class LaydownConfigDisplay(Frame):
         self.canvas.create_polygon(
             *effector, *ruler_end, *corner1, *corner2, fill='gray')
 
-        self.circle(effector, 10 * SCALE, "black")
-        line(effector, ruler_end, width=3)
+        self.circle(effector, 10, "black")
+        self.line(effector, ruler_end, width=3)
 
     def circle(self, center_coords, radius, fill=''):
         x0 = center_coords[0] - radius
@@ -55,3 +51,7 @@ class LaydownConfigDisplay(Frame):
         x1 = center_coords[0] + radius
         y1 = center_coords[1] + radius
         self.canvas.create_oval(x0, y0, x1, y1, fill=fill)
+
+    def line(self, start, end, width=1):
+        self.canvas.create_line(
+            start[0], start[1], end[0], end[1], width=width)

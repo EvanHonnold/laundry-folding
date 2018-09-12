@@ -10,7 +10,7 @@ from laydown_planning.laydown_path import LaydownPath
 
 class LaydownPathDisplay(Frame):
 
-    SCALE = 0.75
+    SCALE = 0.5
 
     def __init__(self, parent=None):
 
@@ -26,20 +26,41 @@ class LaydownPathDisplay(Frame):
         self.canvas = canvas
         canvas.pack()
 
+    # NOTE: no scaling and translating should occur in this function --
+    #       it should all be in the helper functions below
     def show(self, path: LaydownPath):
 
+        # draw the background:
         for r in TABLE_PLATES:
             self.rectangle(r)
-        self.circle(ROBOT_BASE_CENTER, ROBOT_BASE_RADIUS *
-                    self.SCALE, fill="black")
+        self.circle(ROBOT_BASE_CENTER, ROBOT_BASE_RADIUS, fill="black")
+
+        # draw the ruler positions:
+        def ruler(start, angle):
+            self.circle(start, 10, "black")  # the effector
+            self.line(start, start + direction(angle) * RULER_LENGTH, width=5)
+        ruler(path.start_xyz[0:2], path.ruler_angle)
+        ruler(path.dest_xyz[0:2], path.ruler_angle)
+        ruler(path.pullout_xyz[0:2], path.ruler_angle)
+
+        # draw the collision boxes of the ruler and arm
+        # TODO finish here
+        box_list = path.get_hitboxes()
+        box1 = box_list[0]
 
         print("not implemented")
 
+    # helper functions -- all scaling and translating should be done here
+
     def circle(self, center_coords, radius, fill=''):
-        x0 = (center_coords[0] - radius + self.translation[0]) * self.SCALE
-        y0 = (center_coords[1] - radius + self.translation[1]) * self.SCALE
-        x1 = (center_coords[0] + radius + self.translation[0]) * self.SCALE
-        y1 = (center_coords[1] + radius + self.translation[1]) * self.SCALE
+        center_coords = center_coords + self.translation
+        center_coords = center_coords * self.SCALE
+        radius = radius * self.SCALE
+
+        x0 = center_coords[0] - radius
+        y0 = center_coords[1] - radius
+        x1 = center_coords[0] + radius
+        y1 = center_coords[1] + radius
         self.canvas.create_oval(x0, y0, x1, y1, fill=fill)
 
     def rectangle(self, r: Rect):
@@ -55,3 +76,12 @@ class LaydownPathDisplay(Frame):
         values = [v * self.SCALE for v in values]
 
         self.canvas.create_polygon(*values, fill="gray")
+
+    def line(self, start, end, width=1):
+        start = (start + self.translation) * self.SCALE
+        end = (end + self.translation) * self.SCALE
+        width = width * self.SCALE
+        self.canvas.create_line(
+            start[0], start[1], end[0], end[1], width=width)
+
+    # TODO: function to draw a polygon

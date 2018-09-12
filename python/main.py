@@ -5,9 +5,9 @@ import numpy as np
 
 print("Beginning run")
 
-from laydown_planning.testing import example_laydown_path_display
+from laydown_planning.testing import example_laydown_path_display, example_laydown_config_display
 example_laydown_path_display()
-
+# example_laydown_config_display()
 
 # NOTE: this is a script to demonstrate folds at various
 # # angles, not to fold the shirt neatly.

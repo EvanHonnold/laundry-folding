@@ -37,6 +37,27 @@ class LaydownPath():
         self.dest_xyz += translation
         self.pullout_xyz += translation
 
+    def get_hitboxes(self):
+        """ Gets the hitboxes in xy-space. Just considers the end effector
+            (modeled as a square) and the ruler. Returns a list of lists, 
+            where each sublist contains the points of a polygon. """
+
+        buffer = 20
+        start = self.start_xyz[0:2]
+        angle = self.ruler_angle
+
+        # First hitbox is around the path traveled by the effector.
+        # Sample three points around its start.
+        s1 = start + direction(angle) * buffer
+        s2 = start + direction(angle - pi/2) * buffer
+        s3 = start + direction(angle + pi/2) * buffer
+
+        box_1 = [s1, s2, s3]
+
+        # TODO: box 2
+
+        return [box_1]
+
     def __str__(self):
         sb = []
         for key in self.__dict__:
