@@ -2,7 +2,8 @@ from math import pi
 
 from numpy import append, array
 
-from helpers import direction
+from helpers import direction, hitbox_of_path
+from constants import RULER_LENGTH
 
 
 class LaydownPath():
@@ -42,21 +43,22 @@ class LaydownPath():
             (modeled as a square) and the ruler. Returns a list of lists, 
             where each sublist contains the points of a polygon. """
 
-        buffer = 20
         start = self.start_xyz[0:2]
+        mid = self.dest_xyz[0:2]
+        end = self.pullout_xyz[0:2]
         angle = self.ruler_angle
 
-        # First hitbox is around the path traveled by the effector.
-        # Sample three points around its start.
-        s1 = start + direction(angle) * buffer
-        s2 = start + direction(angle - pi/2) * buffer
-        s3 = start + direction(angle + pi/2) * buffer
+        # First two hitboxes are around the path traveled by the
+        # effector (one for each stage of the movement).
+        box1 = hitbox_of_path(start, mid, 40)
+        box2 = hitbox_of_path(mid, end, 40)
 
-        box_1 = [s1, s2, s3]
+        # This hitbox is the area swept by the ruler:
+        rulertip_start = start + direction(angle) * RULER_LENGTH
+        rulertip_mid = mid + direction(angle) * RULER_LENGTH
+        box3 = [start, rulertip_start, rulertip_mid, mid]
 
-        # TODO: box 2
-
-        return [box_1]
+        return [box1, box2, box3]
 
     def __str__(self):
         sb = []

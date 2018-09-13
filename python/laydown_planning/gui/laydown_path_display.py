@@ -35,6 +35,12 @@ class LaydownPathDisplay(Frame):
             self.rectangle(r)
         self.circle(ROBOT_BASE_CENTER, ROBOT_BASE_RADIUS, fill="black")
 
+        # draw the collision boxes of the ruler and arm
+        # TODO finish here
+        box_list = path.get_hitboxes()
+        for box in box_list:
+            self.polygon(box)
+
         # draw the ruler positions:
         def ruler(start, angle):
             self.circle(start, 10, "black")  # the effector
@@ -42,11 +48,6 @@ class LaydownPathDisplay(Frame):
         ruler(path.start_xyz[0:2], path.ruler_angle)
         ruler(path.dest_xyz[0:2], path.ruler_angle)
         ruler(path.pullout_xyz[0:2], path.ruler_angle)
-
-        # draw the collision boxes of the ruler and arm
-        # TODO finish here
-        box_list = path.get_hitboxes()
-        box1 = box_list[0]
 
         print("not implemented")
 
@@ -75,7 +76,7 @@ class LaydownPathDisplay(Frame):
             values.append(p[1] + self.translation[1])
         values = [v * self.SCALE for v in values]
 
-        self.canvas.create_polygon(*values, fill="gray")
+        self.canvas.create_polygon(*values, fill="darkgray")
 
     def line(self, start, end, width=1):
         start = (start + self.translation) * self.SCALE
@@ -84,4 +85,15 @@ class LaydownPathDisplay(Frame):
         self.canvas.create_line(
             start[0], start[1], end[0], end[1], width=width)
 
-    # TODO: function to draw a polygon
+    def polygon(self, points: list):
+        # translate
+        points = [point + self.translation for point in points]
+        # scale
+        points = [point * self.SCALE for point in points]
+        # unpack the array
+        points_unpacked = []
+        for point in points:
+            points_unpacked.append(point[0])
+            points_unpacked.append(point[1])
+
+        self.canvas.create_polygon(points_unpacked, fill="gray")

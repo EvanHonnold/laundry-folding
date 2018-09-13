@@ -73,7 +73,7 @@ def example_laydown_path_display():
     from laydown_planning.laydown_path import LaydownPath
     from math import pi
 
-    config = LaydownConfiguration(100, 1.3 * pi, 1.8 * pi)
+    config = LaydownConfiguration(100, 0.5 * pi, 1.0 * pi)
     path = LaydownPath(config, 100, 200, destination_x=237)
 
     parent = tk.Frame(None)

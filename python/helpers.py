@@ -4,7 +4,7 @@ import math
 import os
 import socket
 import sys
-from math import pi
+from math import pi, atan2
 from pprint import pprint
 
 from numpy import array
@@ -89,11 +89,14 @@ def direction(angle_radians):
     y_component = math.sin(angle_radians)
     return array([x_component, y_component])
 
-# checks if a value is within a range (inclu)
+
+def vector_to_angle(vector):
+    angle = atan2(vector[1], vector[0])
+    return fix_angle(angle)
 
 
 def within_range(value, a, b):
-    """ Checks if value is within the endpoints 'a' and 'b'. Convenience 
+    """ Checks if value is within the endpoints 'a' and 'b'. Convenience
         method for when you don't know which endpoint will be bigger. """
 
     if (a > b):
@@ -130,3 +133,24 @@ def translate(points, dx, dy):
     for p in points:
         newpoints.append((p[0] + dx, p[1] + dy))
     return newpoints
+
+
+def hitbox_of_path(start, end, buffer):
+    """ Given a start and end point, generate a rough polygonal
+        hitbox around the path between. 
+
+        Returns a list of 2d points. """
+
+    away = vector_to_angle(start - end)  # away from direction of movement
+
+    # three points around the start...
+    s1 = start + direction(away - pi/2) * buffer
+    s2 = start + direction(away) * buffer
+    s3 = start + direction(away + pi/2) * buffer
+
+    # ... and three points around the end.
+    e1 = end + direction(away + pi/2) * buffer
+    e2 = end + direction(away + pi) * buffer
+    e3 = end + direction(away - pi/2) * buffer
+
+    return [s1, s2, s3, e1, e2, e3]
