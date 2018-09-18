@@ -5,10 +5,10 @@ import numpy as np
 
 print("Beginning run")
 
-from laydown_planning.testing import checking_collision_detection, example_laydown_path_display
+from laydown_planning.testing import checking_collision_detection, testing_overall_planner, example_laydown_path_display
 # example_laydown_path_display()
 # example_laydown_config_display()
-checking_collision_detection()
+testing_overall_planner()
 
 # NOTE: this is a script to demonstrate folds at various
 # # angles, not to fold the shirt neatly.

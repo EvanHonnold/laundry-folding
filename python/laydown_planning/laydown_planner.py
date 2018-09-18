@@ -1,12 +1,12 @@
-from constants import RULER_LENGTH
-from numpy import array, array_equal, append
-from math import sin, cos, pi
-from helpers import within_range, direction
+from math import sin, pi
+from typing import List
+from constants import ROBOT_BASE
 from laydown_planning.laydown_config import LaydownConfiguration
 from laydown_planning.laydown_path import LaydownPath
+from laydown_planning.fold_instructions import FoldInstructions
 
 
-def plan(fold_instructions):
+def plan(fold_instructions: FoldInstructions)->List[LaydownConfiguration]:
     assert fold_instructions.__class__.__name__ == 'FoldInstructions'
     angle = fold_instructions.fold_angle
 
@@ -57,7 +57,8 @@ def within_reach(laydown_path):
 
 def collisions(laydown_path: LaydownPath)->bool:
     for polygon in laydown_path.get_hitboxes():
-        print(polygon.crosses())
+        if polygon.intersection(ROBOT_BASE).area > 0:
+            return True
     return False
 
 
