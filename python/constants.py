@@ -1,6 +1,7 @@
 from math import pi
 
 from pyquaternion import Quaternion
+from shapely.geometry import Point
 
 # distance between the tip of the ruler and the center
 # of the effector (NOT the other end of the ruler):
@@ -15,6 +16,8 @@ Q_NEUTRAL = Quaternion(axis=[1, 0, 0], angle=pi) * \
 
 ROBOT_BASE_CENTER = [0, 0]
 ROBOT_BASE_RADIUS = 100
+ROBOT_BASE = Point(ROBOT_BASE_CENTER).buffer(
+    ROBOT_BASE_RADIUS)  # circle is discretized into polygon
 
 # how far away the robot can reach from (0, 0, 200)
 ROBOT_REACH = 550

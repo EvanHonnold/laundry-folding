@@ -3,6 +3,7 @@ from numpy import array, array_equal, append
 from math import sin, cos, pi
 from helpers import within_range, direction
 from laydown_planning.laydown_config import LaydownConfiguration
+from laydown_planning.laydown_path import LaydownPath
 
 
 def plan(fold_instructions):
@@ -38,8 +39,8 @@ def choose_best(paths):
             m_path.shift_x(x)
 
             # check for out of reach, check for collisions w. self (arm)
-            if within_reach(m_path) and not collisions(m_path):
-                value = assign_value(m_path)
+            # if within_reach(m_path) and not collisions(m_path):
+            #     value = assign_value(m_path)
 
             m_path.shift_x(-x)
 
@@ -54,8 +55,10 @@ def within_reach(laydown_path):
     print("not implemented")
 
 
-def collisions(laydown_path):
-    print("not implemented")
+def collisions(laydown_path: LaydownPath)->bool:
+    for polygon in laydown_path.get_hitboxes():
+        print(polygon.crosses())
+    return False
 
 
 def assign_value(laydown_path):

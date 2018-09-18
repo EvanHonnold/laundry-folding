@@ -1,6 +1,8 @@
 from math import pi
+from typing import List
 
 from numpy import append, array
+from shapely.geometry import Polygon
 
 from helpers import direction, hitbox_of_path
 from constants import RULER_LENGTH
@@ -38,9 +40,9 @@ class LaydownPath():
         self.dest_xyz += translation
         self.pullout_xyz += translation
 
-    def get_hitboxes(self):
+    def get_hitboxes(self)->List[Polygon]:
         """ Gets the hitboxes in xy-space. Just considers the end effector
-            (modeled as a square) and the ruler. Returns a list of lists, 
+            (modeled as a square) and the ruler. Returns a list of lists,
             where each sublist contains the points of a polygon. """
 
         start = self.start_xyz[0:2]
@@ -56,7 +58,7 @@ class LaydownPath():
         # This hitbox is the area swept by the ruler:
         rulertip_start = start + direction(angle) * RULER_LENGTH
         rulertip_mid = mid + direction(angle) * RULER_LENGTH
-        box3 = [start, rulertip_start, rulertip_mid, mid]
+        box3 = Polygon([start, rulertip_start, rulertip_mid, mid])
 
         return [box1, box2, box3]
 

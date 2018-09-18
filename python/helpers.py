@@ -11,6 +11,8 @@ from numpy import array
 from pyquaternion import Quaternion
 import abb
 
+from shapely.geometry import Polygon
+
 
 def get_robot_controller():
     """ returns a tuple: (robot controller reference, 
@@ -99,12 +101,11 @@ def within_range(value, a, b):
     """ Checks if value is within the endpoints 'a' and 'b'. Convenience
         method for when you don't know which endpoint will be bigger. """
 
-    if (a > b):
+    if a > b:
         return b <= value <= a
-    elif (a < b):
+    if a < b:
         return a <= value <= b
-    else:
-        return value == a
+    return value == a
 
 # ensures the value is in the range [0, 2pi]
 
@@ -135,7 +136,7 @@ def translate(points, dx, dy):
     return newpoints
 
 
-def hitbox_of_path(start, end, buffer):
+def hitbox_of_path(start, end, buffer)->Polygon:
     """ Given a start and end point, generate a rough polygonal
         hitbox around the path between. 
 
@@ -153,4 +154,4 @@ def hitbox_of_path(start, end, buffer):
     e2 = end + direction(away + pi) * buffer
     e3 = end + direction(away - pi/2) * buffer
 
-    return [s1, s2, s3, e1, e2, e3]
+    return Polygon([s1, s2, s3, e1, e2, e3])

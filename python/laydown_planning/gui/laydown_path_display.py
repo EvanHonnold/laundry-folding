@@ -1,8 +1,10 @@
 from tkinter import Frame, Canvas
 from numpy import array
+from shapely.geometry import Polygon
 
-from constants import RULER_LENGTH, TABLE_PLATES, Rect, ROBOT_BASE_CENTER, ROBOT_BASE_RADIUS
+from constants import RULER_LENGTH, TABLE_PLATES, Rect, ROBOT_BASE_CENTER, ROBOT_BASE_RADIUS, ROBOT_BASE
 from helpers import direction
+
 from laydown_planning.laydown_path import LaydownPath
 
 # Class for visualizing LaydownPath objects.
@@ -10,7 +12,7 @@ from laydown_planning.laydown_path import LaydownPath
 
 class LaydownPathDisplay(Frame):
 
-    SCALE = 0.5
+    SCALE = 0.7
 
     def __init__(self, parent=None):
 
@@ -33,10 +35,9 @@ class LaydownPathDisplay(Frame):
         # draw the background:
         for r in TABLE_PLATES:
             self.rectangle(r)
-        self.circle(ROBOT_BASE_CENTER, ROBOT_BASE_RADIUS, fill="black")
+        self.polygon(ROBOT_BASE, fill="Black")
 
         # draw the collision boxes of the ruler and arm
-        # TODO finish here
         box_list = path.get_hitboxes()
         for box in box_list:
             self.polygon(box)
@@ -48,8 +49,6 @@ class LaydownPathDisplay(Frame):
         ruler(path.start_xyz[0:2], path.ruler_angle)
         ruler(path.dest_xyz[0:2], path.ruler_angle)
         ruler(path.pullout_xyz[0:2], path.ruler_angle)
-
-        print("not implemented")
 
     # helper functions -- all scaling and translating should be done here
 
@@ -64,7 +63,7 @@ class LaydownPathDisplay(Frame):
         y1 = center_coords[1] + radius
         self.canvas.create_oval(x0, y0, x1, y1, fill=fill)
 
-    def rectangle(self, r: Rect):
+    def rectangle(self, r: Rect, fill="darkgray"):
         topleft = array([r.x_min, r.y_max])
         topright = array([r.x_max, r.y_max])
         btmright = array([r.x_max, r.y_min])
@@ -76,7 +75,7 @@ class LaydownPathDisplay(Frame):
             values.append(p[1] + self.translation[1])
         values = [v * self.SCALE for v in values]
 
-        self.canvas.create_polygon(*values, fill="darkgray")
+        self.canvas.create_polygon(*values, fill=fill)
 
     def line(self, start, end, width=1):
         start = (start + self.translation) * self.SCALE
@@ -85,7 +84,9 @@ class LaydownPathDisplay(Frame):
         self.canvas.create_line(
             start[0], start[1], end[0], end[1], width=width)
 
-    def polygon(self, points: list):
+    def polygon(self, poly: Polygon, fill: str="gray")->None:
+        points = poly.exterior.coords
+
         # translate
         points = [point + self.translation for point in points]
         # scale
@@ -96,4 +97,4 @@ class LaydownPathDisplay(Frame):
             points_unpacked.append(point[0])
             points_unpacked.append(point[1])
 
-        self.canvas.create_polygon(points_unpacked, fill="gray")
+        self.canvas.create_polygon(points_unpacked, fill=fill)
