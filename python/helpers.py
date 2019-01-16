@@ -117,10 +117,9 @@ def fix_angle(value_radians):
         value_radians -= pi * 2
     return value_radians
 
-# rotates the list of points around the origin:
-
 
 def rotate(points, angle):
+    """ rotates the list of points around the origin """
     c_angle = cmath.exp(angle * 1j)
     newpoints = []
     for x, y in points:

@@ -5,10 +5,13 @@ import numpy as np
 
 print("Beginning run")
 
-from laydown_planning.testing import checking_collision_detection, testing_overall_planner, example_laydown_path_display
+from laydown_planning.testing import checking_collision_detection, testing_overall_planner, example_laydown_path_display, example_inputdisplay
+
+# example_inputdisplay()
 # example_laydown_path_display()
 # example_laydown_config_display()
-testing_overall_planner()
+# testing_overall_planner()
+# checking_collision_detection()
 
 # NOTE: this is a script to demonstrate folds at various
 # # angles, not to fold the shirt neatly.
@@ -27,5 +30,17 @@ testing_overall_planner()
 # print(c.robot.get_joints())
 # from constants import Q_NEUTRAL
 # c.set_quaternion(Q_NEUTRAL)
+
+
+# TEMPORARY: test the new GUI code
+from laydown_planning.gui.smart_canvas import SmartCanvas
+
+
+s = SmartCanvas()
+s.line([100, 100], [300, 200])
+
+s.translation(200, 300)
+s.line([100, 100], [300, 200])
+s.show()
 
 print("Finished executing script.")

@@ -6,12 +6,15 @@
 #     paths += [LaydownPath(option, 250, 250)]
 # choose_best(paths)
 
+from PIL import ImageGrab
+from tkinter import Tk
+
 
 def example_inputdisplay():
     """ """
     import tkinter as tk
     from laydown_planning.gui.input_display import InputDisplay
-    from fold_instructions import FoldInstructions
+    from laydown_planning.fold_instructions import FoldInstructions
     from math import pi
 
     instr = FoldInstructions(100, pi * 0.25)
@@ -89,6 +92,7 @@ def testing_overall_planner():
 
     instr = FoldInstructions(400, 0.5 * pi)
 
+    # show the fold instructions:
     # parent = tk.Frame(None)
     # parent.pack()
     # display = InputDisplay(parent)
@@ -96,17 +100,17 @@ def testing_overall_planner():
     # display.pack()
     # parent.mainloop()
 
+
     configs = plan(instr)
     for i in range(0, len(configs)):
-        if i is 3:
+        if i is 1:
             parent = tk.Frame(None)
             parent.pack()
             display = LaydownConfigDisplay(parent)
             display.show(configs[i])
             display.pack()
             parent.mainloop()
-
             pass
 
     # TODO continue debugging here: the FoldInstructions aren't
-    # converting correctly into LaydownConfigurations
+    # converting correctly into LaydownConfigurations.
