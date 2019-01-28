@@ -1,57 +1,37 @@
-from tkinter import Frame, Canvas
-from numpy import array
+import numpy as np
+from shapely.geometry import Polygon
 
 from constants import RULER_LENGTH
 from helpers import direction
-from laydown_planning.laydown_config import LaydownConfiguration
+from laydown_planning.gui.smart_canvas import SmartCanvas
 
-SCALE = 0.4
-size = 500  # of the window
-center = array([size/2, size/2])
+# For visualizing LaydownConfig objects.
 
-# Class for visualizing LaydownConfig objects.
+def display_laydown_config(config):
 
+    canvas = SmartCanvas(width=600, height=600)
 
-class LaydownConfigDisplay(Frame):
-    def __init__(self, parent=None):
-        color = "#%02x%02x%02x" % (224, 224, 224)  # gray 300
-        Frame.__init__(self, parent, width=size, height=size)
-        self.pack_propagate(False)
-        canvas = Canvas(self, width=size, height=size,
-                        bg=color, highlightthickness=0)
-        self.canvas = canvas
-        canvas.pack()
+    # draw the center line (gap in the table)
+    canvas.line([0, 302], [600, 302])
+    canvas.line([0, 298], [600, 298])
 
-    def show(self, config: LaydownConfiguration):
-        assert config.__class__.__name__ == "LaydownConfiguration"
+    # re-center origin in the middle of that line:
+    canvas.translation(x=300, y=300)
+    canvas.scaling(x=0.66, y=0.66)
 
-        # draw the table gap
-        self.line([0, size/2 - 1], [size, size/2 - 1])
-        self.line([0, size/2 + 1], [size, size/2 + 1])
+    # draw the ruler
+    ruler_base = np.array([0, config.y])
+    ruler_vec = direction(config.ruler_direction) * RULER_LENGTH
+    ruler_end = ruler_base + ruler_vec
+    canvas.line(ruler_base, ruler_end, width=3)
 
-        # vector represents the coordinate change from
-        # the effector to the ruler's tip:
-        v = direction(config.ruler_direction) * RULER_LENGTH * SCALE
-        effector = center + [0, config.y]
+    # draw an example garment
+    garment_vec = direction(config.garment_direction) * 200
+    offset = ruler_vec * 0.1    # so we don't draw garment along entire ruler
+    corner1 = ruler_end + garment_vec
+    corner2 = ruler_base + garment_vec + offset
+    garment = Polygon([ruler_base + offset, ruler_end, corner1, corner2])
+    canvas.polygon(garment, fill="gray")
 
-        ruler_end = effector + v
-
-        garment_vec = direction(config.garment_direction) * 200 * SCALE
-        corner1 = ruler_end + garment_vec
-        corner2 = effector + garment_vec
-        self.canvas.create_polygon(
-            *effector, *ruler_end, *corner1, *corner2, fill='gray')
-
-        self.circle(effector, 10, "black")
-        self.line(effector, ruler_end, width=3)
-
-    def circle(self, center_coords, radius, fill=''):
-        x0 = center_coords[0] - radius
-        y0 = center_coords[1] - radius
-        x1 = center_coords[0] + radius
-        y1 = center_coords[1] + radius
-        self.canvas.create_oval(x0, y0, x1, y1, fill=fill)
-
-    def line(self, start, end, width=1):
-        self.canvas.create_line(
-            start[0], start[1], end[0], end[1], width=width)
+    canvas.circle(ruler_base, 10)
+    canvas.show()

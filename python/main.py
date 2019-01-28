@@ -32,15 +32,10 @@ from laydown_planning.testing import checking_collision_detection, testing_overa
 # c.set_quaternion(Q_NEUTRAL)
 
 
-# TEMPORARY: test the new GUI code
-from laydown_planning.gui.smart_canvas import SmartCanvas
 
+# TEMPORARY: testing laydown config display
 
-s = SmartCanvas()
-s.line([100, 100], [300, 200])
-
-s.translation(200, 300)
-s.line([100, 100], [300, 200])
-s.show()
+from laydown_planning.testing import example_laydown_config_display
+example_laydown_config_display()
 
 print("Finished executing script.")

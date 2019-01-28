@@ -6,7 +6,6 @@
 #     paths += [LaydownPath(option, 250, 250)]
 # choose_best(paths)
 
-from PIL import ImageGrab
 from tkinter import Tk
 
 
@@ -28,19 +27,12 @@ def example_inputdisplay():
 
 
 def example_laydown_config_display():
-    import tkinter as tk
-    from laydown_planning.gui.laydown_config_display import LaydownConfigDisplay
+    from laydown_planning.gui.laydown_config_display import display_laydown_config
     from laydown_planning.laydown_config import LaydownConfiguration
     from math import pi
 
-    config = LaydownConfiguration(100, 1.3 * pi, 1.8 * pi)
-
-    parent = tk.Frame(None)
-    parent.pack()
-    display = LaydownConfigDisplay(parent)
-    display.show(config)
-    display.pack()
-    parent.mainloop()
+    c = LaydownConfiguration(100, 1.3 * pi, 1.8 * pi)
+    display_laydown_config(c)
 
 
 def example_laydown_path_display():
