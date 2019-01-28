@@ -154,3 +154,12 @@ def hitbox_of_path(start, end, buffer)->Polygon:
     e3 = end + direction(away - pi/2) * buffer
 
     return Polygon([s1, s2, s3, e1, e2, e3])
+
+
+
+def rectangle(xmin, xmax, ymin, ymax):
+    p1 = [xmin, ymin]
+    p2 = [xmax, ymin]
+    p3 = [xmax, ymax]
+    p4 = [xmin, ymax]
+    return Polygon([p1, p2, p3, p4])

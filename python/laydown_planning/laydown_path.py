@@ -5,7 +5,7 @@ from numpy import append, array
 from shapely.geometry import Polygon
 
 from helpers import direction, hitbox_of_path
-from constants import RULER_LENGTH
+from constants import RULER_LENGTH, GAP_Y_MAX, GAP_Y_MIN
 
 
 class LaydownPath():
@@ -19,7 +19,11 @@ class LaydownPath():
         assert laydown_config.__class__.__name__ == 'LaydownConfiguration'
         LAYDOWN_SLOPE = 0.75
 
-        dest_xyz = array([destination_x, laydown_config.y, 0])
+        # translate the laydown config down to the
+        # level of the gap in the table:
+        dest_y = laydown_config.y + (GAP_Y_MAX + GAP_Y_MIN)/2.0
+
+        dest_xyz = array([destination_x, dest_y, 0])
         start_xyz_direction = append(
             direction(laydown_config.garment_direction),
             LAYDOWN_SLOPE)
@@ -42,8 +46,8 @@ class LaydownPath():
 
     def get_hitboxes(self)->List[Polygon]:
         """ Gets the hitboxes in xy-space. Just considers the end effector
-            (modeled as a square) and the ruler. Returns a list of lists,
-            where each sublist contains the points of a polygon. """
+            (modeled as a square) and the ruler. Returns a list of
+            Shapely Polygon objects. """
 
         start = self.start_xyz[0:2]
         mid = self.dest_xyz[0:2]
@@ -60,7 +64,7 @@ class LaydownPath():
         rulertip_mid = mid + direction(angle) * RULER_LENGTH
         box3 = Polygon([start, rulertip_start, rulertip_mid, mid])
 
-        return [box1, box2, box3]
+        return [box3, box1, box2]
 
     def __str__(self):
         sb = []

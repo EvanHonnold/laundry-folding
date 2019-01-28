@@ -36,21 +36,17 @@ def example_laydown_config_display():
 
 
 def example_laydown_path_display():
-    import tkinter as tk
-    from laydown_planning.gui.laydown_path_display import LaydownPathDisplay
     from laydown_planning.laydown_config import LaydownConfiguration
     from laydown_planning.laydown_path import LaydownPath
+    from laydown_planning.gui.laydown_config_display import display_laydown_config
+    from laydown_planning.gui.laydown_path_display import display_laydown_path
     from math import pi
 
     config = LaydownConfiguration(100, 1.3 * pi, 1.8 * pi)
     path = LaydownPath(config, 100, 200, destination_x=237)
-
-    parent = tk.Frame(None)
-    parent.pack()
-    display = LaydownPathDisplay(parent)
-    display.show(path)
-    display.pack()
-    parent.mainloop()
+    
+    display_laydown_config(config, "testing_config", ".png")
+    display_laydown_path(path, "testing_path", ".png")
 
 
 def checking_collision_detection():
@@ -80,7 +76,7 @@ def testing_overall_planner():
     from math import pi
     import tkinter as tk
     from laydown_planning.gui.input_display import InputDisplay
-    from laydown_planning.gui.laydown_config_display import LaydownConfigDisplay
+    from laydown_planning.gui.laydown_config_display import display_laydown_config
 
     instr = FoldInstructions(400, 0.5 * pi)
 
@@ -94,15 +90,8 @@ def testing_overall_planner():
 
 
     configs = plan(instr)
-    for i in range(0, len(configs)):
-        if i is 1:
-            parent = tk.Frame(None)
-            parent.pack()
-            display = LaydownConfigDisplay(parent)
-            display.show(configs[i])
-            display.pack()
-            parent.mainloop()
-            pass
+    for i, config in enumerate(configs):
+        display_laydown_config(config, "config_" + str(i), ".png")
 
     # TODO continue debugging here: the FoldInstructions aren't
     # converting correctly into LaydownConfigurations.

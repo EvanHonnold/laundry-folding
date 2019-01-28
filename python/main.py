@@ -33,9 +33,7 @@ from laydown_planning.testing import checking_collision_detection, testing_overa
 
 
 
-# TEMPORARY: testing laydown config display
-
-from laydown_planning.testing import example_laydown_config_display
-example_laydown_config_display()
+# TEMPORARY: rewriting laydown path display
+example_laydown_path_display()
 
 print("Finished executing script.")

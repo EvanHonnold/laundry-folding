@@ -3,6 +3,8 @@ from math import pi
 from pyquaternion import Quaternion
 from shapely.geometry import Point
 
+from helpers import rectangle
+
 # distance between the tip of the ruler and the center
 # of the effector (NOT the other end of the ruler):
 RULER_LENGTH = 475
@@ -31,33 +33,25 @@ GAP_Y_MAX = -244
 CROSSLINE_X = 237
 
 
-class Rect():
-    def __init__(self, xmin, xmax, ymin, ymax):
-        self.x_min = xmin
-        self.x_max = xmax
-        self.y_min = ymin
-        self.y_max = ymax
+LOWER_BIG_PLATE = rectangle(CROSSLINE_X,
+                            CROSSLINE_X + 18 * 25.4,
+                            GAP_Y_MIN - 18 * 25.4,
+                            GAP_Y_MIN)
 
+UPPER_BIG_PLATE = rectangle(CROSSLINE_X,
+                            CROSSLINE_X + 18 * 25.4,
+                            GAP_Y_MAX,
+                            GAP_Y_MAX + 18 * 25.4,)
 
-LOWER_BIG_PLATE = Rect(CROSSLINE_X,
-                       CROSSLINE_X + 18 * 25.4,
-                       GAP_Y_MIN - 18 * 25.4,
-                       GAP_Y_MIN)
+LOWER_MEDIUM_PLATE = rectangle(CROSSLINE_X - 12 * 25.4,
+                               CROSSLINE_X,
+                               GAP_Y_MIN - 12 * 25.4,
+                               GAP_Y_MIN)
 
-UPPER_BIG_PLATE = Rect(CROSSLINE_X,
-                       CROSSLINE_X + 18 * 25.4,
-                       GAP_Y_MAX,
-                       GAP_Y_MAX + 18 * 25.4,)
-
-LOWER_MEDIUM_PLATE = Rect(CROSSLINE_X - 12 * 25.4,
-                          CROSSLINE_X,
-                          GAP_Y_MIN - 12 * 25.4,
-                          GAP_Y_MIN)
-
-UPPER_SMALL_PLATE = Rect(CROSSLINE_X - 6 * 25.4,
-                         CROSSLINE_X,
-                         GAP_Y_MAX,
-                         GAP_Y_MAX + 6 * 25.4)
+UPPER_SMALL_PLATE = rectangle(CROSSLINE_X - 6 * 25.4,
+                              CROSSLINE_X,
+                              GAP_Y_MAX,
+                              GAP_Y_MAX + 6 * 25.4)
 
 TABLE_PLATES = [LOWER_BIG_PLATE, UPPER_BIG_PLATE,
                 LOWER_MEDIUM_PLATE, UPPER_SMALL_PLATE]

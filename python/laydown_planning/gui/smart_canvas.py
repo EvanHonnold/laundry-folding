@@ -1,21 +1,20 @@
-from tkinter import Frame, Canvas
-from numpy import array
-from shapely.geometry import Polygon
 import subprocess
 import os
+from tkinter import Frame, Canvas
 import numpy as np
-
-# Usage:
-# 
-#   c = SmartCanvas()
-#
-#   # add features, for example:
-#   c.line([0, 0], [1, 1]) 
-#
-#   c.show()
-
+from shapely.geometry import Polygon
 
 class SmartCanvas(Frame):
+    """ 
+        Usage:
+
+        c = SmartCanvas()
+
+        # add features, for example:
+        c.line([0, 0], [1, 1]) 
+
+        c.show()
+    """
 
     def __init__(self, width=500, height=500, background=(224, 224, 224)):
 
@@ -42,10 +41,10 @@ class SmartCanvas(Frame):
         self.scaling(1, -1)
 
     def translation(self, x, y):
-        self.transforms.insert(0, ("translation", array([x, y]).astype(float)))
+        self.transforms.insert(0, ("translation", np.array([x, y]).astype(float)))
 
     def scaling(self, x, y):
-        self.transforms.insert(0, ("scaling", array([x, y])))
+        self.transforms.insert(0, ("scaling", np.array([x, y])))
 
     def circle(self, center, radius, fill='black'):
         x0 = center[0] - radius
@@ -56,23 +55,26 @@ class SmartCanvas(Frame):
         p1 = self._fix_point([x0, y0])
         p2 = self._fix_point([x1, y1])
         
+        fill = self._fix_fill(fill)
         self.canvas.create_oval(p1[0], p1[1], p2[0], p2[1], fill=fill)
 
-    def line(self, start, end, width=1):
+    def line(self, start, end, width=1, fill="black"):
         start = self._fix_point(start)
         end = self._fix_point(end)
-        
-        self.canvas.create_line(*start, *end, width=width)
+        self.canvas.create_line(*start, *end, width=width, 
+                                fill=self._fix_fill(fill))
 
-    def polygon(self, polygon:Polygon, fill="black"):
+    def polygon(self, polygon: Polygon, fill="black"):
         x_coords, y_coords = polygon.exterior.coords.xy
         fixed_coords = []
         for i in range(len(x_coords)):
             x = x_coords[i]
             y = y_coords[i]
-            fixed = self._fix_point(array([x, y]))
+            fixed = self._fix_point(np.array([x, y]))
             fixed_coords.append(fixed[0])
             fixed_coords.append(fixed[1])
+
+        fill = self._fix_fill(fill)
         self.canvas.create_polygon(*fixed_coords, fill=fill)
 
     def show(self):
@@ -101,6 +103,10 @@ class SmartCanvas(Frame):
         else:
             print(fileformat + " format not supported.")
 
+        # delete the .ps file:
+        os.remove(name + ".ps")
+        self.parent.destroy()
+
 
 
     def _fix_point(self, p):
@@ -119,4 +125,10 @@ class SmartCanvas(Frame):
                 raise Exception("Reached invalid transformation: " +  transform)
         return p
 
+    def _fix_fill(self, fill):
+        if isinstance(fill, tuple):
+            fill_tuple = (fill[0], fill[1], fill[2])
+            return "#%02x%02x%02x" % fill_tuple
+        else:
+            return fill
     

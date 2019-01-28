@@ -7,7 +7,9 @@ from laydown_planning.gui.smart_canvas import SmartCanvas
 
 # For visualizing LaydownConfig objects.
 
-def display_laydown_config(config):
+def display_laydown_config(config, filename=None, fileformat=".pdf"):
+    """ If no filename is given, this will display to a window.
+        If you do provide a filename, it'll save to that location. """
 
     canvas = SmartCanvas(width=600, height=600)
 
@@ -34,4 +36,9 @@ def display_laydown_config(config):
     canvas.polygon(garment, fill="gray")
 
     canvas.circle(ruler_base, 10)
-    canvas.show()
+
+    if filename is None:
+        canvas.show()
+    else:
+        canvas.save(name=filename, fileformat=fileformat)
+        print("Done saving the file.")
