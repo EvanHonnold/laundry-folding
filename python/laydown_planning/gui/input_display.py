@@ -1,82 +1,42 @@
-from constants import LEFT, RIGHT, RULER_LENGTH
-from tkinter import Frame, Canvas
+from shapely.geometry import Polygon
+import numpy as np
+
 from helpers import direction
-from numpy import array
+from constants import RULER_LENGTH
+
+from laydown_planning.gui.smart_canvas import SmartCanvas
+from laydown_planning.fold_instructions import FoldInstructions
 
 
-class InputDisplay(Frame):
-    def __init__(self, parent=None):
-        self.BUFFER = 75
-        width = self.BUFFER * 2 + RULER_LENGTH
-        height = self.BUFFER * 4
-        self.width = width
-        self.height = height
+def display_input(instr: FoldInstructions, filename=None, fileformat=".pdf"):
 
-        color = "#%02x%02x%02x" % (144, 164, 174)  # blue-gray 300
-        Frame.__init__(self, parent, width=width, height=height)
-        self.pack_propagate(False)
-        canvas = Canvas(self, width=width, height=height,
-                        bg=color, highlightthickness=0)
-        self.canvas = canvas
-        canvas.pack()
+    canvas = SmartCanvas(width=600, height=400)
 
-        ruler_points = self.translate(
-            [(0, 3), (0, -3), (RULER_LENGTH, -3), (RULER_LENGTH, 3)],
-            self.BUFFER, self.BUFFER * 3)
-        self.polygon(ruler_points,
-                     "#%02x%02x%02x" % (96, 125, 139))  # blue-gray 500
+    effector = np.array([50, 300])
+    ruler_vec = np.array([RULER_LENGTH, 0])
+    garment_vec = np.array([0, -200])
+    ruler_end = effector + ruler_vec
 
-        cwidth = RULER_LENGTH - 70
-        cheight = self.BUFFER * 2
-        cloth = self.polygon([(cwidth, 0), (0, 0), (0, -cheight), (cwidth, -cheight)],
-                             "#%02x%02x%02x" % (176, 190, 197))  # blue-gray 200
-        self.move(cloth, self.BUFFER + 35, self.BUFFER * 3 + 3)
+    garment_start = effector + 0.1 * ruler_vec # offset from effector a bit
+    garment = Polygon([garment_start, ruler_end,
+                       ruler_end + garment_vec, garment_start + garment_vec])
 
-    def show(self, fold_instr):
-        assert fold_instr.__class__.__name__ == "FoldInstructions"
-        effector_points = [(-15, -3), (15, -3), (15, 27), (-15, 27)]
-        intercept_point = None
-        # if (fold_instr.ruler_angle == RIGHT):
-        effector_points = self.translate(effector_points,
-                                         self.BUFFER, self.BUFFER * 3)
-        intercept_point = array(
-            [self.BUFFER + fold_instr.intercept, self.BUFFER])
-        # elif (fold_instr.ruler_angle == LEFT):
-        #     effector_points = self.translate(effector_points,
-        #         self.BUFFER + RULER_LENGTH, self.BUFFER * 3)
-        #     intercept_point = array([self.BUFFER + RULER_LENGTH + fold_instr.intercept, self.BUFFER])
+    # draw the ruler and canvas
+    canvas.circle(effector, radius=10)
+    canvas.line(effector, effector + ruler_vec, width=5)
+    canvas.polygon(Polygon(garment), fill="gray")
 
-        p = self.polygon(effector_points,
-                         "#%02x%02x%02x" % (84, 110, 122))  # blue-gray 600
+    # draw the fold line
+    intercept = effector + [instr.intercept, 0]
+    line_vec = direction(instr.fold_angle)
+    upper_endpoint = intercept + line_vec * 1000
+    lower_endpoint = intercept - line_vec * 1000
+    canvas.line(upper_endpoint, lower_endpoint, width=4, 
+                fill="#%02x%02x%02x" % (183, 28, 28))
 
-        # display the fold line
-        d = direction(fold_instr.fold_angle)
-        d[1] = d[1] * -1  # fix y
-        upper_endpoint = intercept_point + d * 1000
-        lower_endpoint = intercept_point - d * 1000
-        linecolor = "#%02x%02x%02x" % (13, 71, 161)
-        self.canvas.create_line(upper_endpoint[0], upper_endpoint[1],
-                                intercept_point[0], intercept_point[1], width=3, fill=linecolor)
-        self.canvas.create_line(lower_endpoint[0], lower_endpoint[1],
-                                intercept_point[0], intercept_point[1], width=3, fill=linecolor)
-
-    def translate(self, points, dx, dy):
-        newpoints = []
-        for p in points:
-            newpoints.append((p[0] + dx, p[1] + dy))
-        return newpoints
-
-    def move_poly(self, polygon, new_points):
-        pts = []
-        for p in new_points:
-            pts.append(p[0])
-            pts.append(self.height - p[1])  # to fix y direction
-        self.canvas.coords(polygon, *pts)
-
-    def polygon(self, points, fill=None):
-        p = self.canvas.create_polygon(points, fill=fill)
-        self.move_poly(p, points)
-        return p
-
-    def move(self, polygon, x, y):
-        self.canvas.move(polygon, x, -y)
+    # show or save the file
+    if filename is None:
+        canvas.show()
+    else:
+        canvas.save(name=filename, fileformat=fileformat)
+        print("Done saving the file.")

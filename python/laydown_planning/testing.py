@@ -11,19 +11,12 @@ from tkinter import Tk
 
 def example_inputdisplay():
     """ """
-    import tkinter as tk
-    from laydown_planning.gui.input_display import InputDisplay
-    from laydown_planning.fold_instructions import FoldInstructions
+    from laydown_planning.gui.input_display import display_input
     from math import pi
+    from laydown_planning.fold_instructions import FoldInstructions
 
     instr = FoldInstructions(100, pi * 0.25)
-
-    parent = tk.Frame(None)
-    parent.pack()
-    display = InputDisplay(parent)
-    display.show(instr)
-    display.pack()
-    parent.mainloop()
+    display_input(instr, "testing_input", ".png")
 
 
 def example_laydown_config_display():

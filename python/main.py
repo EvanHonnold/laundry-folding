@@ -5,8 +5,7 @@ import numpy as np
 
 print("Beginning run")
 
-from laydown_planning.testing import checking_collision_detection, testing_overall_planner, example_laydown_path_display, example_inputdisplay
-
+from laydown_planning.testing import *
 # example_inputdisplay()
 # example_laydown_path_display()
 # example_laydown_config_display()
@@ -33,7 +32,10 @@ from laydown_planning.testing import checking_collision_detection, testing_overa
 
 
 
-# TEMPORARY: rewriting laydown path display
-example_laydown_path_display()
+# TEMPORARY: rewriting fold instructions display
+
+
+from laydown_planning.testing import example_inputdisplay
+example_inputdisplay()
 
 print("Finished executing script.")
