@@ -44,7 +44,7 @@ def example_laydown_path_display():
 
 def checking_collision_detection():
     import tkinter as tk
-    from laydown_planning.gui.laydown_path_display import LaydownPathDisplay
+    from laydown_planning.gui.laydown_path_display import display_laydown_path
     from laydown_planning.laydown_config import LaydownConfiguration
     from laydown_planning.laydown_path import LaydownPath
     from math import pi
@@ -64,27 +64,51 @@ def checking_collision_detection():
 
 
 def testing_overall_planner():
-    from laydown_planning.laydown_planner import plan, choose_best
+
+    from laydown_planning.laydown_planner import plan, choose_best, within_reach, collisions
     from laydown_planning.fold_instructions import FoldInstructions
+    from laydown_planning.laydown_path import LaydownPath
+
     from math import pi
     import tkinter as tk
-    from laydown_planning.gui.input_display import InputDisplay
+
+    from laydown_planning.gui.input_display import display_input
     from laydown_planning.gui.laydown_config_display import display_laydown_config
+    from laydown_planning.gui.laydown_path_display import display_laydown_path
 
-    instr = FoldInstructions(400, 0.5 * pi)
+    from constants import TABLE_PLATES
 
-    # show the fold instructions:
-    # parent = tk.Frame(None)
-    # parent.pack()
-    # display = InputDisplay(parent)
-    # display.show(instr)
-    # display.pack()
-    # parent.mainloop()
+    instr = FoldInstructions(350, 0.33 * pi)
+    display_input(instr, "a__Instructions", ".png")
 
+    count = 0 # FOR TESTING
 
     configs = plan(instr)
-    for i, config in enumerate(configs):
-        display_laydown_config(config, "config_" + str(i), ".png")
+    for index, laydown_config in enumerate(configs):
+        display_laydown_config(laydown_config, "config %d" % index, ".png")
 
-    # TODO continue debugging here: the FoldInstructions aren't
-    # converting correctly into LaydownConfigurations.
+        path = LaydownPath(laydown_config, height=200, pull_dist=50)
+
+        # vary the x-coordinate and evaluate the resulting paths:
+        path.shift_x(-400)
+        while path.dest_xyz[0] < 500:
+            path.shift_x(25)
+
+            if within_reach(path):
+
+                # calculate intersection of area swept by ruler (hitbox 0)
+                # with the table plates (the workspace)
+                hbs = path.get_hitboxes()
+                total_area = 0.0
+                for plate in TABLE_PLATES:
+                    total_area += plate.intersection(hbs[0]).area
+                proportion = total_area / float(hbs[0].area)
+
+                if proportion > 0.5 and not collisions(path):
+                    display_laydown_path(path, "path%dWORKS%f" % (count, proportion), ".png")
+
+            count += 1
+
+    
+
+    

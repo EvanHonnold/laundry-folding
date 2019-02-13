@@ -31,11 +31,7 @@ from laydown_planning.testing import *
 # c.set_quaternion(Q_NEUTRAL)
 
 
+testing_overall_planner()
 
-# TEMPORARY: rewriting fold instructions display
-
-
-from laydown_planning.testing import example_inputdisplay
-example_inputdisplay()
 
 print("Finished executing script.")

@@ -37,6 +37,7 @@ class LaydownPath():
         self.dest_xyz = dest_xyz
         self.pullout_xyz = dest_xyz + pull_change
         self.ruler_angle = laydown_config.ruler_direction
+        
 
     def shift_x(self, amount):
         translation = array([amount, 0, 0])

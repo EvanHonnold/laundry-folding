@@ -1,6 +1,7 @@
 from math import sin, pi
+from numpy.linalg import norm
 from typing import List
-from constants import ROBOT_BASE
+from constants import ROBOT_BASE, ROBOT_REACH
 from laydown_planning.laydown_config import LaydownConfiguration
 from laydown_planning.laydown_path import LaydownPath
 from laydown_planning.fold_instructions import FoldInstructions
@@ -34,7 +35,7 @@ def choose_best(paths):
          """
     for m_path in paths:
 
-        # TODO iterate over various Y-translations
+        # TODO iterate over various X-translations
         for x in range(-400, 400, 20):
             m_path.shift_x(x)
 
@@ -50,9 +51,16 @@ def choose_best(paths):
     print("function incomplete")
 
 
-def within_reach(laydown_path):
+def within_reach(laydown_path: LaydownPath):
 
-    print("not implemented")
+    xy_pts = [laydown_path.start_xyz[0:2], laydown_path.dest_xyz[0:2], 
+              laydown_path.pullout_xyz[0:2]]
+
+    for point in xy_pts:
+        if norm(point) >= ROBOT_REACH:
+            return False
+    return True
+
 
 
 def collisions(laydown_path: LaydownPath)->bool:
